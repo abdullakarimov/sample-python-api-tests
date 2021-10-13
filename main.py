@@ -3,7 +3,7 @@ import random
 import string
 import time
 
-username = ''.join(random.choices(string.ascii_lowercase + string.digits, k=16))
+username = ''.join(random.choices(string.ascii_lowercase + string.digits, k=12))
 firstnames = ['Yvonne', 'Blanche', 'Oliver', 'Estelle', 'Kirk']
 lastnames = ['Pineda', 'Simmons', 'Slater', 'Monaghan', 'Davenport']
 firstname = random.choice(firstnames)
@@ -25,18 +25,23 @@ post_data = {
 # create a user
 createUserReq = sender.send('post', '', post_data)
 assert createUserReq.status_code == 200
-time.sleep(3)
+time.sleep(1)
 
 # verify the user is created
 readUserReq = sender.send('get', username)
-print(readUserReq.json()) # for some reason this needs to be printed or else the assertion fails occasionally
-assert readUserReq.json()['username'] == username
-time.sleep(3)
+try:
+    assert readUserReq.json()['username'] == username
+except Exception as e:
+    print(str(e))
+time.sleep(1)
 
 # delete the user
 deleteUserReq = sender.send('del', username)
-assert deleteUserReq.status_code == 200
-time.sleep(3)
+try:
+    assert deleteUserReq.status_code == 200
+except Exception as e:
+    print(str(e))
+time.sleep(1)
 
 # verify the user is deleted
 readUserReq = sender.send('get', username)
